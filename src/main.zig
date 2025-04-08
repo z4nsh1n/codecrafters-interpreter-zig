@@ -3,6 +3,7 @@ const std = @import("std");
 const TokenType = enum {
     LEFT_PAREN,
     RIGHT_PAREN,
+    EOF,
 };
 
 var stdout = std.io.getStdOut().writer();
@@ -53,8 +54,9 @@ pub fn main() !void {
             } else if (std.mem.eql(u8, token, ")")) {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
-            } else {
-                try stdout.print("EOF  null\n", .{});
+            } else if (std.mem.eql(u8, token, "\n")) {
+                const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
+                try t.to_string();
             }
         }
     } else {
