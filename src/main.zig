@@ -12,7 +12,7 @@ const Token = struct {
     line: i32,
 
     pub fn to_string(self: Token) void {
-        std.debug.print("{any} {s} {any}\n", .{ self.ttype, self.lexeme, self.object });
+        std.debug.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
     }
 };
 
