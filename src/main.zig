@@ -54,7 +54,7 @@ pub fn main() !void {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else {
-                try stdout.print("EOF null\n", .{});
+                try stdout.print("EOF  null\n", .{});
             }
         }
     } else {
