@@ -5,14 +5,17 @@ const TokenType = enum {
     RIGHT_PAREN,
 };
 
+var stdout = std.io.getStdIn().writer();
+
 const Token = struct {
     ttype: TokenType,
     lexeme: []const u8,
     object: ?struct {},
     line: i32,
 
-    pub fn to_string(self: Token) void {
-        std.debug.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
+    pub fn to_string(self: Token) !void {
+        try stdout.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
+        // std.debug.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
     }
 };
 
@@ -46,12 +49,12 @@ pub fn main() !void {
             const token = file_contents[idx .. idx + 1];
             if (std.mem.eql(u8, token, "(")) {
                 const t = Token{ .ttype = .LEFT_PAREN, .lexeme = token, .line = 0, .object = null };
-                t.to_string();
+                try t.to_string();
             } else if (std.mem.eql(u8, token, ")")) {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
-                t.to_string();
+                try t.to_string();
             } else {
-                std.debug.print("EOF null\n", .{});
+                try stdout.print("EOF null\n", .{});
             }
         }
     } else {
