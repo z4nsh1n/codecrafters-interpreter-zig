@@ -5,7 +5,7 @@ const TokenType = enum {
     RIGHT_PAREN,
 };
 
-var stdout = std.io.getStdIn().writer();
+var stdout = std.io.getStdOut().writer();
 
 const Token = struct {
     ttype: TokenType,
