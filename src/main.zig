@@ -9,6 +9,7 @@ const TokenType = enum {
     DOT,
     PLUS,
     MINUS,
+    SEMICOLON,
     COMMA,
     EOF,
 };
@@ -81,6 +82,9 @@ pub fn main() !void {
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ".")) {
                 const t = Token{ .ttype = .DOT, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, ";")) {
+                const t = Token{ .ttype = .SEMICOLON, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "\n")) {
                 continue;
