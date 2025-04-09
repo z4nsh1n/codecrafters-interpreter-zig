@@ -94,9 +94,8 @@ pub fn main() !void {
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "=")) {
                 // peek next
-                const eq = file_contents[idx + 1 .. idx + 2];
                 var t: Token = undefined;
-                if (idx + 2 < file_contents.len and std.mem.eql(u8, eq, "=")) {
+                if (idx + 2 < file_contents.len and std.mem.eql(u8, file_contents[idx + 1 .. idx + 2], "=")) {
                     t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = token, .line = line, .object = null };
                     idx += 1;
                 } else {
