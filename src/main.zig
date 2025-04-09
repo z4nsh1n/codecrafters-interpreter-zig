@@ -95,7 +95,7 @@ pub fn main() !void {
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
             } else {
-                try stderr.print("[line {d}] Error: Unexpected token: {s}\n", .{ line, token });
+                try stderr.print("[line {d}] Error: Unexpected character: {s}\n", .{ line, token });
                 has_errors = true;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
