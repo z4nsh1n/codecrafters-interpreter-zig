@@ -1,5 +1,6 @@
 [![progress-banner](https://backend.codecrafters.io/progress/interpreter/8f044f47-0114-4abf-8037-96936bce2bfd)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
+bla bla
 This is a starting point for Zig solutions to the
 ["Build your own Interpreter" Challenge](https://app.codecrafters.io/courses/interpreter/overview).
 
