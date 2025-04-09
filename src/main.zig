@@ -3,6 +3,8 @@ const std = @import("std");
 const TokenType = enum {
     LEFT_PAREN,
     RIGHT_PAREN,
+    LEFT_BRACE,
+    RIGHT_BRACE,
     EOF,
 };
 
@@ -48,7 +50,13 @@ pub fn main() !void {
 
         for (0..file_contents.len) |idx| {
             const token = file_contents[idx .. idx + 1];
-            if (std.mem.eql(u8, token, "(")) {
+            if (std.mem.eql(u8, token, "{")) {
+                const t = Token{ .ttype = .LEFT_BRACE, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, "}")) {
+                const t = Token{ .ttype = .RIGHT_BRACE, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, "(")) {
                 const t = Token{ .ttype = .LEFT_PAREN, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ")")) {
