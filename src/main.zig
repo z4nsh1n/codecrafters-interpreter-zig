@@ -5,6 +5,10 @@ const TokenType = enum {
     RIGHT_PAREN,
     LEFT_BRACE,
     RIGHT_BRACE,
+    STAR,
+    DOT,
+    PLUS,
+    COMMA,
     EOF,
 };
 
@@ -61,6 +65,18 @@ pub fn main() !void {
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ")")) {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, "*")) {
+                const t = Token{ .ttype = .STAR, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, ",")) {
+                const t = Token{ .ttype = .COMMA, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, "+")) {
+                const t = Token{ .ttype = .PLUS, .lexeme = token, .line = 0, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, ".")) {
+                const t = Token{ .ttype = .DOT, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "\n")) {
                 continue;
