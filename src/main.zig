@@ -55,10 +55,17 @@ pub fn main() !void {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "\n")) {
-                const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
-                try t.to_string();
+                continue;
+                // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
+                // try t.to_string();
+            } else {
+                unreachable;
+                // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
+                // try t.to_string();
             }
         }
+        const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
+        try t.to_string();
     } else {
         try std.io.getStdOut().writer().print("EOF  null\n", .{}); // Placeholder, remove this line when implementing the scanner
     }
