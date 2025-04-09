@@ -11,6 +11,8 @@ const TokenType = enum {
     MINUS,
     SEMICOLON,
     COMMA,
+    EQUAL,
+    EQUAL_EQUAL,
     EOF,
 };
 
@@ -52,45 +54,58 @@ pub fn main() !void {
     const file_contents = try std.fs.cwd().readFileAlloc(std.heap.page_allocator, filename, std.math.maxInt(usize));
     defer std.heap.page_allocator.free(file_contents);
 
-    var line: u32 = 1;
+    var line: i32 = 1;
     var has_errors: bool = false;
     if (file_contents.len > 0) {
         // @panic("Scanner not implemented");
 
-        for (0..file_contents.len) |idx| {
+        var idx: usize = 0;
+        while (idx < file_contents.len) {
             const token = file_contents[idx .. idx + 1];
             if (std.mem.eql(u8, token, "{")) {
-                const t = Token{ .ttype = .LEFT_BRACE, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .LEFT_BRACE, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "}")) {
-                const t = Token{ .ttype = .RIGHT_BRACE, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .RIGHT_BRACE, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "(")) {
-                const t = Token{ .ttype = .LEFT_PAREN, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .LEFT_PAREN, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ")")) {
-                const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "*")) {
-                const t = Token{ .ttype = .STAR, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .STAR, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ",")) {
-                const t = Token{ .ttype = .COMMA, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .COMMA, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "+")) {
-                const t = Token{ .ttype = .PLUS, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .PLUS, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "-")) {
-                const t = Token{ .ttype = .MINUS, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .MINUS, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ".")) {
-                const t = Token{ .ttype = .DOT, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .DOT, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, ";")) {
-                const t = Token{ .ttype = .SEMICOLON, .lexeme = token, .line = 0, .object = null };
+                const t = Token{ .ttype = .SEMICOLON, .lexeme = token, .line = line, .object = null };
+                try t.to_string();
+            } else if (std.mem.eql(u8, token, "=")) {
+                // peek next
+                const eq = file_contents[idx + 1 .. idx + 2];
+                var t: Token = undefined;
+                if (std.mem.eql(u8, eq, "=")) {
+                    t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = token, .line = line, .object = null };
+                    idx += 1;
+                } else {
+                    t = Token{ .ttype = .EQUAL, .lexeme = token, .line = line, .object = null };
+                }
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "\n")) {
                 line += 1;
+                idx += 1;
                 continue;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
@@ -100,6 +115,8 @@ pub fn main() !void {
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
             }
+
+            idx += 1;
         }
         const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
         try t.to_string();
