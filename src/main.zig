@@ -15,6 +15,7 @@ const TokenType = enum {
 };
 
 var stdout = std.io.getStdOut().writer();
+var stderr = std.io.getStdErr().writer();
 
 const Token = struct {
     ttype: TokenType,
@@ -51,6 +52,8 @@ pub fn main() !void {
     const file_contents = try std.fs.cwd().readFileAlloc(std.heap.page_allocator, filename, std.math.maxInt(usize));
     defer std.heap.page_allocator.free(file_contents);
 
+    var line: u32 = 1;
+    var has_errors: bool = false;
     if (file_contents.len > 0) {
         // @panic("Scanner not implemented");
 
@@ -87,11 +90,13 @@ pub fn main() !void {
                 const t = Token{ .ttype = .SEMICOLON, .lexeme = token, .line = 0, .object = null };
                 try t.to_string();
             } else if (std.mem.eql(u8, token, "\n")) {
+                line += 1;
                 continue;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
             } else {
-                unreachable;
+                try stderr.print("[line {d}] Error: Unexpected token: {s}\n", .{ line, token });
+                has_errors = true;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
             }
@@ -100,5 +105,10 @@ pub fn main() !void {
         try t.to_string();
     } else {
         try std.io.getStdOut().writer().print("EOF  null\n", .{}); // Placeholder, remove this line when implementing the scanner
+    }
+    if (has_errors) {
+        std.posix.exit(65);
+    } else {
+        std.posix.exit(0);
     }
 }
