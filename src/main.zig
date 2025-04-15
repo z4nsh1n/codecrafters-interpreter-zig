@@ -21,12 +21,12 @@ var stderr = std.io.getStdErr().writer();
 
 const Token = struct {
     ttype: TokenType,
-    lexeme: u8,
+    lexeme: []const u8,
     object: ?struct {},
     line: i32,
 
     pub fn to_string(self: Token) !void {
-        try stdout.print("{s} {c} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
+        try stdout.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
         // std.debug.print("{s} {s} {any}\n", .{ @tagName(self.ttype), self.lexeme, self.object });
     }
 };
@@ -60,75 +60,58 @@ pub fn main() !void {
         // @panic("Scanner not implemented");
 
         var idx: usize = 0;
-        var prev_token: ?u8 = null;
-        for (file_contents) |token| {
-            // const token = file_contents[idx .. idx + 1];
-            if (prev_token == '=') {
-                if (token == '=') {
-                    const t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = token, .line = line, .object = null };
-                    try t.to_string();
-                    prev_token = null;
-                    continue;
-                } else {
-                    const t = Token{ .ttype = .EQUAL, .lexeme = token, .line = line, .object = null };
-                    prev_token = null;
-                    try t.to_string();
-                }
-            }
-            if (token == '{') {
+        while (idx < file_contents.len) {
+            const token = file_contents[idx .. idx + 1];
+            if (std.mem.eql(u8, token, "{")) {
                 const t = Token{ .ttype = .LEFT_BRACE, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '}') {
+            } else if (std.mem.eql(u8, token, "}")) {
                 const t = Token{ .ttype = .RIGHT_BRACE, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '(') {
+            } else if (std.mem.eql(u8, token, "(")) {
                 const t = Token{ .ttype = .LEFT_PAREN, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == ')') {
+            } else if (std.mem.eql(u8, token, ")")) {
                 const t = Token{ .ttype = .RIGHT_PAREN, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '*') {
+            } else if (std.mem.eql(u8, token, "*")) {
                 const t = Token{ .ttype = .STAR, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == ',') {
+            } else if (std.mem.eql(u8, token, ",")) {
                 const t = Token{ .ttype = .COMMA, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '+') {
+            } else if (std.mem.eql(u8, token, "+")) {
                 const t = Token{ .ttype = .PLUS, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '-') {
+            } else if (std.mem.eql(u8, token, "-")) {
                 const t = Token{ .ttype = .MINUS, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '.') {
+            } else if (std.mem.eql(u8, token, ".")) {
                 const t = Token{ .ttype = .DOT, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == ';') {
+            } else if (std.mem.eql(u8, token, ";")) {
                 const t = Token{ .ttype = .SEMICOLON, .lexeme = token, .line = line, .object = null };
                 try t.to_string();
-            } else if (token == '=') {
-                prev_token = token;
-                continue;
-
-                // } else if (std.mem.eql(u8, token, "=")) {
-                //     // peek next
-                //     var t: Token = undefined;
-                //     if (idx + 2 < file_contents.len and std.mem.eql(u8, file_contents[idx .. idx + 2], "==")) {
-                //         t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = token, .line = line, .object = null };
-                //         idx += 2;
-                //         try t.to_string();
-                //         continue;
-                //     } else {
-                //         t = Token{ .ttype = .EQUAL, .lexeme = token, .line = line, .object = null };
-                //     }
-                //     try t.to_string();
-            } else if (token == '\n') {
+            } else if (std.mem.eql(u8, token, "=")) {
+                // peek next
+                var t: Token = undefined;
+                if (idx + 2 < file_contents.len and std.mem.eql(u8, file_contents[idx .. idx + 2], "==")) {
+                    t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = "==", .line = line, .object = null };
+                    idx += 2;
+                    try t.to_string();
+                    continue;
+                } else {
+                    t = Token{ .ttype = .EQUAL, .lexeme = token, .line = line, .object = null };
+                    try t.to_string();
+                }
+            } else if (std.mem.eql(u8, token, "\n")) {
                 line += 1;
                 idx += 1;
                 continue;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
             } else {
-                try stderr.print("[line {d}] Error: Unexpected character: {c}\n", .{ line, token });
+                try stderr.print("[line {d}] Error: Unexpected character: {s}\n", .{ line, token });
                 has_errors = true;
                 // const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
                 // try t.to_string();
@@ -136,7 +119,7 @@ pub fn main() !void {
 
             idx += 1;
         }
-        const t = Token{ .ttype = .EOF, .lexeme = ' ', .line = 0, .object = null };
+        const t = Token{ .ttype = .EOF, .lexeme = " ", .line = 0, .object = null };
         try t.to_string();
     } else {
         try std.io.getStdOut().writer().print("EOF  null\n", .{}); // Placeholder, remove this line when implementing the scanner
