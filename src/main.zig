@@ -119,7 +119,7 @@ pub fn main() !void {
 
             idx += 1;
         }
-        const t = Token{ .ttype = .EOF, .lexeme = " ", .line = 0, .object = null };
+        const t = Token{ .ttype = .EOF, .lexeme = "", .line = 0, .object = null };
         try t.to_string();
     } else {
         try std.io.getStdOut().writer().print("EOF  null\n", .{}); // Placeholder, remove this line when implementing the scanner
