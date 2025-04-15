@@ -96,7 +96,7 @@ pub fn main() !void {
                 // peek next
                 var t: Token = undefined;
                 if (idx + 2 < file_contents.len and std.mem.eql(u8, file_contents[idx .. idx + 2], "==")) {
-                    t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = token, .line = line, .object = null };
+                    t = Token{ .ttype = .EQUAL_EQUAL, .lexeme = "==", .line = line, .object = null };
                     idx += 2;
                     try t.to_string();
                     continue;
